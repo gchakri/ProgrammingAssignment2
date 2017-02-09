@@ -2,22 +2,20 @@
 ## of a matrix is available already, and calculates only if
 ## it isn't cached
 
-## The "MakeCacheMatrix" function creates a matrix with get and
-## set functions so that a special matrix can be created/accessed
-## in/from different envirnment. It also caches if there is 
-## an inverse matrix solved for the matrix and stores it and allows
-## access through getinverse and setinverse operations.
-## Once we assign a new matrix it sets a NULL value!
+## The "MakeCacheMatrix" function sets and gets a matrix to
+## to inverse. It also caches if there is a solved inverse matrix 
+## and allows it to be accessed through getinverse and 
+## setinverse operations.
 
 makeCacheMatrix <- function(x = matrix()) {
-	iX <- NULL
+	invX <- NULL
 	set <- function(y) {
 		x <<- y
-		iX <<- NULL
+		invX <<- NULL
 	}
 	get <- function() x
-	setinverse <- function(solve) iX <<- solve
-	getinverse <- function() iX
+	setinverse <- function(solvedInv) invX <<- solvedInv
+	getinverse <- function() invX
 	list(set = set, get = get,
 		setinverse = setinverse,
 		getinverse = getinverse)
@@ -30,14 +28,14 @@ makeCacheMatrix <- function(x = matrix()) {
 ## and will store it once it computes
 
 cacheSolve <- function(x, ...) {
-	iX <- x$getinverse()
-	if(!is.null(iX)) {
+	invX <- x$getinverse()
+	if(!is.null(invX)) {
 		message("getting cached inverse matrix")
-		return(iX)
+		return(invX)
 	}
 	mat <- x$get()
-	iX <- solve(mat, ...)
-	x$setinverse(iX)
-	iX
+	invX <- solve(mat, ...)
+	x$setinverse(invX)
+	invX
       ## Return a matrix that is the inverse of 'x'
 }
