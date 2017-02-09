@@ -1,15 +1,43 @@
-## Put comments here that give an overall description of what your
-## functions do
+## These two functions will allow us to to serach if a inverse 
+## of a matrix is available already, and calculates only if
+## it isn't cached
 
-## Write a short comment describing this function
+## The "MakeCacheMatrix" function creates a matrix with get and
+## set functions so that a special matrix can be created/accessed
+## in/from different envirnment. It also caches if there is 
+## an inverse matrix solved for the matrix and stores it and allows
+## access through getinverse and setinverse operations.
+## Once we assign a new matrix it sets a NULL value!
 
 makeCacheMatrix <- function(x = matrix()) {
-
+	iX <- NULL
+	set <- function(y) {
+		x <<- y
+		iX <<- NULL
+	}
+	get <- function() x
+	setinverse <- function(solve) iX <<- solve
+	getinverse <- function() iX
+	list(set = set, get = get,
+		setinverse = setinverse,
+		getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## This "cacheSolve" function checks if an inverse matrix is 
+## stored in the previous function and returns if it finds
+## It only computes an inverse if a cached solution isn't there
+## and will store it once it computes
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+	iX <- x$getinverse()
+	if(!is.null(iX)) {
+		message("getting cached inverse matrix")
+		return(iX)
+	}
+	mat <- x$get()
+	iX <- solve(mat, ...)
+	x$setinverse(iX)
+	iX
+      ## Return a matrix that is the inverse of 'x'
 }
